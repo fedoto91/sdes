@@ -1,7 +1,16 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * SDES
+ * 
+ * @author (Eugene Fedotov)
+ * @version (October 16, 2014)
+ */
+
 public class SDES {
+	private boolean[] inp = new boolean[10];
+
 	/**
 	 * Encrypt the given string using SDES Each character produces a byte of
 	 * cipher.
@@ -12,8 +21,66 @@ public class SDES {
 	public byte[] encrypt(java.lang.String msg) {
 		Scanner scanner = new Scanner(System.in);
 		getKey10(scanner);
-		byte[] a = { 1, 2, 3, 4 };
+		int[] epv = { 2, 4, 1, 6, 3, 9, 0, 8, 7, 5 };
+		expPerm(inp, epv);
+		byte[] a = { 1, 2, 3, 4 }; // stub
 		return a;
+	}
+
+	/**
+	 * Expand and/or permute and/or select from the bit array, inp, producing an
+	 * expanded/permuted/selected bit array
+	 * 
+	 * @param inp
+	 * @param epv
+	 */
+	public boolean[] expPerm(boolean[] inp, int[] epv) {
+		boolean[] p10 = new boolean[10];
+		for (int i = 0; i < 10; i++)
+			p10[i] = inp[epv[i]];
+		/**
+		 * circular left shift by one bit separately on first 5 bits and second
+		 * 5 bits
+		 */
+		boolean temp;
+		temp = lh(inp)[0];
+		for (int i = 0, j = 1; i < 4; i++, j++)
+			p10[i] = lh(inp)[j];
+		p10[4] = temp;
+		temp = rh(inp)[0];
+		for (int i = 5, j = 1; i < 9; i++, j++)
+			p10[i] = rh(inp)[j];
+		p10[9] = temp;
+		/** done **/
+		
+		
+		return inp;
+	}
+
+	/**
+	 * Left half of x, L(x)
+	 * 
+	 * @param inp
+	 * @return
+	 */
+	boolean[] lh(boolean[] inp) {
+		boolean[] temp = new boolean[4];
+		for (int i = 0; i < 5; i++)
+			temp[i] = inp[i];
+		return temp;
+	}
+
+	/**
+	 * Right half of x, R(x)
+	 * 
+	 * @param inp
+	 * @return
+	 */
+	boolean[] rh(boolean[] inp) {
+		boolean[] temp = new boolean[4];
+		for (int i = 5; i < 9; i++)
+			temp[i] = inp[i];
+		return temp;
 	}
 
 	/**
@@ -24,15 +91,17 @@ public class SDES {
 	public void getKey10(java.util.Scanner scanner) {
 		System.out.println("Enter a 10-bit key, such as 1010101010.");
 		String key = scanner.nextLine();
-		while (key.length() != 10){
+		while (key.length() != 10) {
 			System.out.println("Error: incorrect length. Re-enter the key:");
 			key = scanner.nextLine();
 		}
 		String[] temp = new String[10];
 		temp = key.split("");
-		ArrayList<Integer> keyArray = new ArrayList<Integer>(10);
-		for (int i = 0; i < temp.length; i++)
-			keyArray.add(Integer.parseInt(temp[i]));
+		for (int i = 0; i < 10; i++)
+			if (temp[i].equals("1"))
+				inp[i] = true;
+			else
+				inp[i] = false;
 	}
 
 	/**

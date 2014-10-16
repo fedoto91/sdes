@@ -3,8 +3,8 @@ import java.util.*;
 /**
  * Test the implementation of SDES
  * 
- * @author (sdb)
- * @version (Sep 2010)
+ * @author (Eugene Fedotov)
+ * @version (October 16, 2014)
  */
 public class Driver {
 	public static void main(String[] args) {
