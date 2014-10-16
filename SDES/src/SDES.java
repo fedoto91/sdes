@@ -1,4 +1,7 @@
-public class sdes {
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class SDES {
 	/**
 	 * Encrypt the given string using SDES Each character produces a byte of
 	 * cipher.
@@ -7,8 +10,29 @@ public class sdes {
 	 * @return An array of bytes representing the cipher text.
 	 */
 	public byte[] encrypt(java.lang.String msg) {
+		Scanner scanner = new Scanner(System.in);
+		getKey10(scanner);
 		byte[] a = { 1, 2, 3, 4 };
 		return a;
+	}
+
+	/**
+	 * Get a 10 bit key from the keyboard, such as 1010101010.
+	 * 
+	 * @param scanner
+	 */
+	public void getKey10(java.util.Scanner scanner) {
+		System.out.println("Enter a 10-bit key, such as 1010101010.");
+		String key = scanner.nextLine();
+		while (key.length() != 10){
+			System.out.println("Error: incorrect length. Re-enter the key:");
+			key = scanner.nextLine();
+		}
+		String[] temp = new String[10];
+		temp = key.split("");
+		ArrayList<Integer> keyArray = new ArrayList<Integer>(10);
+		for (int i = 0; i < temp.length; i++)
+			keyArray.add(Integer.parseInt(temp[i]));
 	}
 
 	/**
@@ -48,7 +72,7 @@ public class sdes {
 	 * @param byteArray
 	 */
 	public void show(byte[] byteArray) {
-		
+
 	}
 
 	/**
@@ -57,6 +81,6 @@ public class sdes {
 	 * @param inp
 	 */
 	public void show(boolean[] inp) {
-		
+
 	}
 }
