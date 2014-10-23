@@ -1,5 +1,4 @@
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.Arrays;
 
 /**
  * SDES
@@ -9,147 +8,188 @@ import java.util.Scanner;
  */
 
 public class SDES {
-	private boolean[] inp = new boolean[10];
 
-	/**
-	 * Encrypt the given string using SDES Each character produces a byte of
-	 * cipher.
-	 * 
-	 * @param msg
-	 * @return An array of bytes representing the cipher text.
-	 */
-	public byte[] encrypt(java.lang.String msg) {
-		Scanner scanner = new Scanner(System.in);
-		getKey10(scanner);
-		int[] epv = { 2, 4, 1, 6, 3, 9, 0, 8, 7, 5 };
-		expPerm(inp, epv);
-		byte[] a = { 1, 2, 3, 4 }; // stub
-		return a;
+	void show(byte[] byteArray)
+	{
+		System.out.println(Arrays.toString(byteArray));
 	}
+	
+	void show(boolean[] inp)
+	{
+		System.out.println(Arrays.toString(inp));
+	}
+	
+	byte[] encrypt(String msg)
+	{
+		byte[] block = msg.getBytes();
+		
+		for(int i = 0; i < block.length; i++)
+		{
+			block[i] = encryptByte(block[i]);
+		}
 
-	/**
-	 * Expand and/or permute and/or select from the bit array, inp, producing an
-	 * expanded/permuted/selected bit array
-	 * 
-	 * @param inp
-	 * @param epv
-	 */
-	public boolean[] expPerm(boolean[] inp, int[] epv) {
-		boolean[] p10 = new boolean[10];
-		for (int i = 0; i < 10; i++)
-			p10[i] = inp[epv[i]];
-		/**
-		 * circular left shift by one bit separately on first 5 bits and second
-		 * 5 bits
-		 */
-		boolean temp;
-		temp = lh(inp)[0];
-		for (int i = 0, j = 1; i < 4; i++, j++)
-			p10[i] = lh(inp)[j];
-		p10[4] = temp;
-		temp = rh(inp)[0];
-		for (int i = 5, j = 1; i < 9; i++, j++)
-			p10[i] = rh(inp)[j];
-		p10[9] = temp;
-		/** done **/
+		return block;
+	}
+	
+	byte[] decrypt(byte[] cipher)
+	{
+		byte[] plain = new byte[8];
 		
+		for(int i = 0; i < cipher.length; i++)
+		{
+			plain[i] = decryptByte(cipher[i]);
+		}
 		
+		return plain;
+	}
+	
+	byte decryptByte(byte b)
+	{
+		
+		boolean[] bitArray = byteToBitArray(b, 8);
+		
+		boolean[] ip = {
+				bitArray[1],
+				bitArray[5],
+				bitArray[2],
+				bitArray[0],
+				bitArray[3],
+				bitArray[7],
+				bitArray[4],
+				bitArray[6],
+		};
+		
+		boolean[] k1 = {
+				bitArray[0],
+				bitArray[6],
+				bitArray[8],
+				bitArray[3],
+				bitArray[7],
+				bitArray[2],
+				bitArray[9],
+				bitArray[5],
+		};
+		
+		boolean[] k2 = {
+				bitArray[7],
+				bitArray[2],
+				bitArray[5],
+				bitArray[4],
+				bitArray[9],
+				bitArray[1],
+				bitArray[8],
+				bitArray[0],
+		};
+		
+		bitArray = f(bitArray, k2); // round 1
+		bitArray = concat(rh(bitArray), lh(bitArray)); // switch
+		bitArray = f(bitArray, k1); // round 2
+		
+		boolean[] byteCipher = {
+				bitArray[3],
+				bitArray[0],
+				bitArray[2],
+				bitArray[4],
+				bitArray[6],
+				bitArray[1],
+				bitArray[7],
+				bitArray[5],
+			};
+
+		return bitArrayToByte(byteCipher);
+	}
+	
+	byte encryptByte (byte b)
+	{
+		boolean[] bitArray = byteToBitArray(b, 8);
+		
+		boolean[] ip = {
+				bitArray[1],
+				bitArray[5],
+				bitArray[2],
+				bitArray[0],
+				bitArray[3],
+				bitArray[7],
+				bitArray[4],
+				bitArray[6],
+		};
+		
+		boolean[] k1 = {
+				bitArray[0],
+				bitArray[6],
+				bitArray[8],
+				bitArray[3],
+				bitArray[7],
+				bitArray[2],
+				bitArray[9],
+				bitArray[5],
+		};
+		
+		boolean[] k2 = {
+				bitArray[7],
+				bitArray[2],
+				bitArray[5],
+				bitArray[4],
+				bitArray[9],
+				bitArray[1],
+				bitArray[8],
+				bitArray[0],
+		};
+		
+		bitArray = f(bitArray, k1); // round 1
+		bitArray = concat(rh(bitArray), lh(bitArray)); // switch
+		bitArray = f(bitArray, k2); // round 2
+		
+		boolean[] byteCipher = {
+			bitArray[3],
+			bitArray[0],
+			bitArray[2],
+			bitArray[4],
+			bitArray[6],
+			bitArray[1],
+			bitArray[7],
+			bitArray[5],
+		};
+		
+		return bitArrayToByte(byteCipher);
+	}
+	
+	boolean[] byteToBitArray(byte b, int size)
+	{
+		// stub
+		boolean[] t = new boolean[10]; 
+		return t;
+	}
+	
+	boolean[] f(boolean[] x, boolean[] k)
+	{
+		// stub
+		return x;
+	}
+	
+	boolean[] lh(boolean[] inp)
+	{
+		// stub
 		return inp;
 	}
-
-	/**
-	 * Left half of x, L(x)
-	 * 
-	 * @param inp
-	 * @return
-	 */
-	boolean[] lh(boolean[] inp) {
-		boolean[] temp = new boolean[4];
-		for (int i = 0; i < 5; i++)
-			temp[i] = inp[i];
-		return temp;
+	
+	boolean[] rh(boolean[] inp)
+	{
+		// stub
+		return inp;
 	}
-
-	/**
-	 * Right half of x, R(x)
-	 * 
-	 * @param inp
-	 * @return
-	 */
-	boolean[] rh(boolean[] inp) {
-		boolean[] temp = new boolean[4];
-		for (int i = 5; i < 9; i++)
-			temp[i] = inp[i];
-		return temp;
+	
+	boolean[] concat(boolean[] x, boolean[] y)
+	{
+		// stub
+		return x;
 	}
-
-	/**
-	 * Get a 10 bit key from the keyboard, such as 1010101010.
-	 * 
-	 * @param scanner
-	 */
-	public void getKey10(java.util.Scanner scanner) {
-		System.out.println("Enter a 10-bit key, such as 1010101010.");
-		String key = scanner.nextLine();
-		while (key.length() != 10) {
-			System.out.println("Error: incorrect length. Re-enter the key:");
-			key = scanner.nextLine();
-		}
-		String[] temp = new String[10];
-		temp = key.split("");
-		for (int i = 0; i < 10; i++)
-			if (temp[i].equals("1"))
-				inp[i] = true;
-			else
-				inp[i] = false;
-	}
-
-	/**
-	 * Decrypt the given byte array.
-	 * 
-	 * @param cipher
-	 *            An array of bytes representing the cipher text.
-	 * @return An array of bytes representing the original plain text.
-	 */
-	public byte[] decrypt(byte[] cipher) {
-		return cipher;
-	}
-
-	/**
-	 * Encrypt a single byte using SDES
-	 * 
-	 * @param b
-	 * @return
-	 */
-	public byte encryptByte(byte b) {
+	
+	byte bitArrayToByte(boolean[] inp)
+	{
+		//stub
+		byte b = 0;
 		return b;
 	}
-
-	/**
-	 * Decrypt a single byte using SDES
-	 * 
-	 * @param b
-	 * @return
-	 */
-	public byte decryptByte(byte b) {
-		return b;
-	}
-
-	/**
-	 * Send the byteArray to stdout
-	 * 
-	 * @param byteArray
-	 */
-	public void show(byte[] byteArray) {
-
-	}
-
-	/**
-	 * Send the bitArray to stdout as 1's and 0's
-	 * 
-	 * @param inp
-	 */
-	public void show(boolean[] inp) {
-
-	}
+	
 }
