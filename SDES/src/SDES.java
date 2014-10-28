@@ -9,16 +9,28 @@ import java.util.Arrays;
 
 public class SDES {
 
+	/**
+	 * Send the byteArray to stdout
+	 */
 	void show(byte[] byteArray)
 	{
 		System.out.println(Arrays.toString(byteArray));
 	}
 	
+	/**
+	 * Send the bitArray to stdout as 1's and 0's
+	 */
 	void show(boolean[] inp)
 	{
 		System.out.println(Arrays.toString(inp));
 	}
 	
+	/**
+	 * Encrypt the given string using SDES Each character produces a byte of cipher.
+	 * 
+	 * @param msg 		the plaintext you want to encrypt
+	 * @return  		the encrypted plaintext as a series of bytes
+	 */
 	byte[] encrypt(String msg)
 	{
 		byte[] block = msg.getBytes();
@@ -31,6 +43,12 @@ public class SDES {
 		return block;
 	}
 	
+	/**
+	 * Decrypt the given byte array.
+	 * 
+	 * @param cipher	the bytes you want to decrypt
+	 * @return			decrypted bytes
+	 */
 	byte[] decrypt(byte[] cipher)
 	{
 		byte[] plain = new byte[8];
@@ -43,6 +61,12 @@ public class SDES {
 		return plain;
 	}
 	
+	/**
+	 * Decrypt a single byte using SDES
+	 * 
+	 * @param b			one byte you want to decrypt
+	 * return			the decrypted byte
+	 */
 	byte decryptByte(byte b)
 	{
 		
@@ -99,6 +123,12 @@ public class SDES {
 		return bitArrayToByte(byteCipher);
 	}
 	
+	/**
+	 * Encrypt a single byte using SDES
+	 * 
+	 * @param b			one byte you want to encrypt
+	 * return			the encrypted byte
+	 */
 	byte encryptByte (byte b)
 	{
 		boolean[] bitArray = byteToBitArray(b, 8);
