@@ -8,6 +8,53 @@ import java.util.Arrays;
  */
 
 public class SDES {
+	
+	boolean[] bitArray;
+	
+	boolean[] final IP = {
+			bitArray[1],
+			bitArray[5],
+			bitArray[2],
+			bitArray[0],
+			bitArray[3],
+			bitArray[7],
+			bitArray[4],
+			bitArray[6],
+	};
+	
+	boolean[] final K1 = {
+			bitArray[0],
+			bitArray[6],
+			bitArray[8],
+			bitArray[3],
+			bitArray[7],
+			bitArray[2],
+			bitArray[9],
+			bitArray[5],
+	};
+	
+	boolean[] final K2 = {
+			bitArray[7],
+			bitArray[2],
+			bitArray[5],
+			bitArray[4],
+			bitArray[9],
+			bitArray[1],
+			bitArray[8],
+			bitArray[0],
+	};
+	
+	
+	boolean[] byteCipher = {
+			bitArray[3],
+			bitArray[0],
+			bitArray[2],
+			bitArray[4],
+			bitArray[6],
+			bitArray[1],
+			bitArray[7],
+			bitArray[5],
+		};
 
 	/**
 	 * Send the byteArray to stdout
@@ -70,55 +117,12 @@ public class SDES {
 	byte decryptByte(byte b)
 	{
 		
-		boolean[] bitArray = byteToBitArray(b, 8);
+		bitArray = byteToBitArray(b, 8);
 		
-		boolean[] ip = {
-				bitArray[1],
-				bitArray[5],
-				bitArray[2],
-				bitArray[0],
-				bitArray[3],
-				bitArray[7],
-				bitArray[4],
-				bitArray[6],
-		};
 		
-		boolean[] k1 = {
-				bitArray[0],
-				bitArray[6],
-				bitArray[8],
-				bitArray[3],
-				bitArray[7],
-				bitArray[2],
-				bitArray[9],
-				bitArray[5],
-		};
-		
-		boolean[] k2 = {
-				bitArray[7],
-				bitArray[2],
-				bitArray[5],
-				bitArray[4],
-				bitArray[9],
-				bitArray[1],
-				bitArray[8],
-				bitArray[0],
-		};
-		
-		bitArray = f(bitArray, k2); // round 1
+		bitArray = f(IP, K2); // round 1
 		bitArray = concat(rh(bitArray), lh(bitArray)); // switch
-		bitArray = f(bitArray, k1); // round 2
-		
-		boolean[] byteCipher = {
-				bitArray[3],
-				bitArray[0],
-				bitArray[2],
-				bitArray[4],
-				bitArray[6],
-				bitArray[1],
-				bitArray[7],
-				bitArray[5],
-			};
+		bitArray = f(bitArray, K1); // round 2
 
 		return bitArrayToByte(byteCipher);
 	}
@@ -131,56 +135,12 @@ public class SDES {
 	 */
 	byte encryptByte (byte b)
 	{
-		boolean[] bitArray = byteToBitArray(b, 8);
+		bitArray = byteToBitArray(b, 8);
 		
-		boolean[] ip = {
-				bitArray[1],
-				bitArray[5],
-				bitArray[2],
-				bitArray[0],
-				bitArray[3],
-				bitArray[7],
-				bitArray[4],
-				bitArray[6],
-		};
-		
-		boolean[] k1 = {
-				bitArray[0],
-				bitArray[6],
-				bitArray[8],
-				bitArray[3],
-				bitArray[7],
-				bitArray[2],
-				bitArray[9],
-				bitArray[5],
-		};
-		
-		boolean[] k2 = {
-				bitArray[7],
-				bitArray[2],
-				bitArray[5],
-				bitArray[4],
-				bitArray[9],
-				bitArray[1],
-				bitArray[8],
-				bitArray[0],
-		};
-		
-		bitArray = f(bitArray, k1); // round 1
+		bitArray = f(IP, K1); // round 1
 		bitArray = concat(rh(bitArray), lh(bitArray)); // switch
-		bitArray = f(bitArray, k2); // round 2
-		
-		boolean[] byteCipher = {
-			bitArray[3],
-			bitArray[0],
-			bitArray[2],
-			bitArray[4],
-			bitArray[6],
-			bitArray[1],
-			bitArray[7],
-			bitArray[5],
-		};
-		
+		bitArray = f(bitArray, K2); // round 2
+
 		return bitArrayToByte(byteCipher);
 	}
 	
